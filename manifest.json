@@ -14,7 +14,7 @@
       "purpose": "maskable"
     }
   ],
-  "start_url": "/home?utm_source=homescreen",
+  "start_url": "/",
   "scope": ".",
   "display": "standalone",
   "theme_color": "#ffffff",
@@ -24,14 +24,7 @@
       "name": "Show MRL",
       "short_name": "MRL",
       "description": "Get MRL",
-      "url": "/home?utm_source=homescreen",
-      "icons": [{ "src": "assets/icon/icon.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Factsheets English",
-      "short_name": "Factsheets Eng",
-      "description": "View factsheets",
-      "url": "/factsheetsE?utm_source=homescreen",
+      "url": "/",
       "icons": [{ "src": "assets/icon/icon.png", "sizes": "192x192" }]
     }
   ]
