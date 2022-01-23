@@ -1,0 +1,33 @@
+ IonGrid {
+    font-size: 1vw;
+  }
+IonRow:first-child{
+    font-weight: bold;
+    text-align: center;
+}
+.col{
+  word-wrap: break-word;
+  border-color: black; 
+  border-width: .01em; 
+  border-style:solid; margin-bottom : -1px;
+ 
+}
+
+.col1{
+  word-wrap: break-word;
+  border-color: black; 
+  border-width: .01em; 
+  border-style:solid; margin-bottom : -1px;
+   border-right:none;
+}
+.col2{
+  word-wrap: break-word;
+  border-color: black; 
+  border-width: .01em; 
+  border-style:solid; margin-bottom : -1px;
+   border-left:none;
+}
+.headrow{
+    font-weight: bold;
+    text-align: center;
+}

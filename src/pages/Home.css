@@ -1,0 +1,105 @@
+.IonCenterAlign{
+  margin: auto;
+  width: 100%;
+}
+@media only screen and (min-width: 300px) {
+  .IonCenterAlign{
+    margin: auto;
+    width: 300px;
+  }
+}
+.IonCenterAlign2{
+  margin: auto;
+  width: 100%;
+}
+@media only screen and (min-width: 313px) {
+  .IonCenterAlign2{
+    margin: auto;
+    width: 300px;
+  }
+}
+.red{
+   color:red;
+}
+.blue{
+   color:	#800080;
+}
+.blue0{
+   color:	#800080;
+   font-size: 25px;
+}
+.scroll1 {
+        height:500px;
+        overflow: scroll;
+}
+
+.button_click1{
+display: inline-block;
+margin-left: auto;
+margin-right: auto;
+}
+.logo_img {
+width:200px;
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+.mag_img {
+width:45px;
+}
+.mag_img2 {
+width:45px;
+margin-left: 10px;
+border: 1px solid #555;
+}
+.mag_img1 {
+width:45px;
+margin-left: 10px;
+border: 1px solid #555;
+}
+.mag_img3 {
+width:45px;
+margin-left: 10px;
+}
+@media only screen and (max-width: 1500px) {
+.mag_img13 {
+width:115px;
+margin-left: 13px;
+border: 1px solid #555;
+}
+.mag_img14 {
+width:115px;
+margin-left: 5px;
+border: 1px solid #555;
+}
+}
+.website {
+  padding: 0!important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
+  color: #069;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.margin1 {
+  margin-left: 1em;
+}
+.row:first-child{
+    font-weight: bold;
+    text-align: center;
+}
+ IonGrid {
+    font-size: 1vw;
+  }
+.col{
+  word-wrap: break-word;
+  border-color: black;
+  border-width: .01em;
+  border-style:solid; margin-bottom : -1px;
+}
+
+img { width:25px;}
+.country_sel {
+    margin-left: 20px;
+}
