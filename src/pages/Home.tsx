@@ -218,12 +218,12 @@ document.getElementsByClassName("country_sel")[0].scrollIntoView();
     <IonPage>
       <IonHeader color="primary"  collapse="condense">
         <IonToolbar color="primary">
-          <IonTitle>Citrus MRL V1.9</IonTitle>
+          <IonTitle>Citrus MRL V2.0</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonHeader>
         <IonToolbar color="primary">
-          <IonTitle>Citrus MRL V1.9</IonTitle>
+          <IonTitle>Citrus MRL V2.0</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -278,7 +278,7 @@ document.getElementsByClassName("country_sel")[0].scrollIntoView();
 
                     <img className="mag_img3" alt="Update" src="/assets/img/update_logo.png" onClick={function() {serviceWorker.unregister(); window.location.href = window.location.origin; window.location.reload();}} />
 
-        <img className="mag_img2" alt="Magazine" src="/assets/img/bros.png" onClick={function() {window.open("http://visualprojects.co.za/Info-Hub/ICA/mobile/index.html",'_system', 'location=yes');}} />
+        <img className="mag_img2" alt="Magazine" src="/assets/img/bros.png" onClick={function() {window.open("https://visualprojects.co.za/Info-Hub/ICA/",'_system', 'location=yes');}} />
 
         <img className="mag_img1" alt="Magazine" src="/assets/img/bros1.png" onClick={function() {window.open("https://testicamobilemagazine.web.app/products_bros.html",'_system', 'location=yes');}} />
         </div>
