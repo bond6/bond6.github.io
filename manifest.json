@@ -1,9 +1,10 @@
 {
   "short_name": "Citrus MRL",
-  "name": "My ICA Citrus MRL",
+  "name": "ICA Citrus MRL",
+  "package_name": "io.twa.citrusmrl",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
+      "src": "assets/icon/icon.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
@@ -28,5 +29,4 @@
       "icons": [{ "src": "assets/icon/icon.png", "sizes": "192x192" }]
     }
   ]
-
 }
