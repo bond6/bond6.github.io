@@ -1,11 +1,18 @@
 {
   "short_name": "Citrus MRL",
-  "name": "My ICA Citrus MRL",
+  "name": "Citrus MRL - Maximum Residue Level Database",
+  "description": "Look up Maximum Residue Levels for citrus fungicides across Canada, Mexico, and USA.",
   "icons": [
     {
       "src": "assets/icon/favicon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/images/logo_180x180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "assets/icon/icon.png",
@@ -14,18 +21,21 @@
       "purpose": "maskable"
     }
   ],
+  "id": "/",
   "start_url": "/",
-  "scope": ".",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#ffffff",
+  "orientation": "portrait",
+  "theme_color": "#0095C1",
   "background_color": "#ffffff",
+  "categories": ["business", "utilities"],
   "shortcuts": [
     {
       "name": "Show MRL",
       "short_name": "MRL",
-      "description": "Get MRL",
+      "description": "Get MRL data for citrus fungicides",
       "url": "/",
-      "icons": [{ "src": "assets/icon/icon.png", "sizes": "192x192" }]
+      "icons": [{ "src": "assets/icon/icon.png", "sizes": "512x512", "type": "image/png" }]
     }
   ]
 }
