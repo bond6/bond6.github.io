@@ -21,3 +21,14 @@ serviceWorker.register({
     window.location.reload();
   }
 });
+
+// Auto-check for updates every 30 minutes (keeps app fresh without manual button)
+if ('serviceWorker' in navigator) {
+  setInterval(() => {
+    navigator.serviceWorker.getRegistration().then((registration) => {
+      if (registration) {
+        registration.update();
+      }
+    });
+  }, 30 * 60 * 1000);
+}

@@ -29,8 +29,8 @@
    font-size: 25px;
 }
 .scroll1 {
-        height:500px;
-        overflow: scroll;
+        max-height:500px;
+        overflow: auto;
 }
 
 .button_click1{
