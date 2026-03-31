@@ -19,7 +19,9 @@
   }
 }
 .red{
-   color:red;
+   color: #ff3b30;
+   font-size: 12px;
+   line-height: 1.4;
 }
 .blue{
    color:	#800080;
@@ -29,77 +31,600 @@
    font-size: 25px;
 }
 .scroll1 {
-        max-height:500px;
-        overflow: auto;
+  max-height: 500px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .button_click1{
-display: inline-block;
-margin-left: auto;
-margin-right: auto;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .logo_img {
-width:200px;
-display: block;
-margin-left: auto;
-margin-right: auto;
+  width: 160px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .mag_img {
-width:45px;
+  width: 40px;
 }
 .mag_img2 {
-width:45px;
-margin-left: 10px;
-border: 1px solid #555;
+  width: 40px;
+  margin-left: 8px;
+  border-radius: 6px;
 }
 .mag_img1 {
-width:45px;
-margin-left: 10px;
-border: 1px solid #555;
+  width: 40px;
+  margin-left: 8px;
+  border-radius: 6px;
 }
 .mag_img3 {
-width:45px;
-margin-left: 10px;
+  width: 40px;
+  margin-left: 8px;
 }
 @media only screen and (max-width: 1500px) {
-.mag_img13 {
-width:115px;
-margin-left: 13px;
-border: 1px solid #555;
-}
-.mag_img14 {
-width:115px;
-margin-left: 5px;
-border: 1px solid #555;
-}
+  .mag_img13 {
+    width: 115px;
+    margin-left: 13px;
+    border-radius: 6px;
+  }
+  .mag_img14 {
+    width: 115px;
+    margin-left: 5px;
+    border-radius: 6px;
+  }
 }
 .website {
   padding: 0!important;
-  /*optional*/
-  font-family: arial, sans-serif;
-  /*input has OS specific font-family*/
-  color: #069;
-  text-decoration: underline;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #007aff;
+  text-decoration: none;
   cursor: pointer;
 }
 .margin1 {
-  margin-left: 1em;
+  margin-left: 16px;
+  margin-right: 16px;
 }
-.row:first-child{
-    font-weight: bold;
-    text-align: center;
+.country_sel {
+  margin-left: 20px;
 }
- IonGrid {
-    font-size: 1vw;
-  }
-.col{
-  word-wrap: break-word;
-  border-color: black;
-  border-width: .01em;
-  border-style:solid; margin-bottom : -1px;
+img { width: 25px; }
+
+/* ===== Native iOS Radio Buttons ===== */
+ion-radio[mode="ios"] {
+  --color: #c7c7cc;
+  --color-checked: #007aff;
+  width: 22px;
+  height: 22px;
+  margin-right: 14px;
+  margin-inline-end: 14px;
 }
 
-img { width:25px;}
-.country_sel {
-    margin-left: 20px;
+ion-radio[mode="ios"]::part(container) {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #c7c7cc;
+  border-radius: 50%;
+}
+
+ion-radio[mode="ios"].radio-checked::part(container) {
+  border-color: #007aff;
+  background: #007aff;
+}
+
+ion-radio[mode="ios"]::part(mark) {
+  width: 0;
+  height: 0;
+}
+
+ion-radio[mode="ios"].radio-checked::part(mark) {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* ===== Native iOS Checkboxes ===== */
+ion-checkbox[mode="ios"] {
+  --size: 22px;
+  --checkbox-background: transparent;
+  --checkbox-background-checked: #007aff;
+  --border-color: #c7c7cc;
+  --border-color-checked: #007aff;
+  --border-radius: 6px;
+  --border-width: 2px;
+  --checkmark-color: #fff;
+  --checkmark-width: 2px;
+  margin-right: 14px;
+  margin-inline-end: 14px;
+}
+
+/* ===== MRL Results — Native iOS Cards ===== */
+.mrl-cards {
+  padding: 0 16px 16px;
+}
+
+.mrl-card {
+  background: #fff;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.04);
+}
+
+.mrl-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mrl-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1c1c1e;
+  flex: 1;
+  line-height: 1.3;
+}
+
+.mrl-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: #007aff;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+
+.mrl-badge-low {
+  background: #ff9500;
+}
+
+.mrl-badge-inf {
+  background: #af52de;
+  font-size: 22px;
+  padding: 0 8px;
+}
+
+.mrl-badge-exempt {
+  background: #af52de;
+  font-size: 18px;
+}
+
+.mrl-card-products {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mrl-card-plabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8e8e93;
+}
+
+.mrl-card-plist {
+  font-size: 14px;
+  color: #3a3a3c;
+  line-height: 1.4;
+}
+
+/* ===== Native iOS Section Headers ===== */
+ion-list-header {
+  --color: #1c1c1e;
+  margin-top: 8px;
+  --padding-start: 16px;
+}
+
+ion-list-header h1 {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.4px;
+  margin: 0 !important;
+}
+
+/* ===== iOS-style list items ===== */
+ion-item {
+  --min-height: 44px;
+  font-size: 16px;
+  --padding-start: 16px;
+}
+
+/* ===== Footer buttons — native iOS style ===== */
+ion-footer ion-toolbar {
+  padding: 4px 12px 4px;
+}
+
+ion-footer ion-button {
+  --border-radius: 12px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 16px;
+  height: 44px;
+  min-width: 100px;
+}
+
+/* ===== Demo container ===== */
+.demo {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+
+/* ===== Disclaimer text ===== */
+.margin1 ion-label {
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
+/* ===== Results section heading ===== */
+.results-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  margin-top: 12px;
+}
+
+.results-heading h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: #1c1c1e;
+  margin: 0;
+}
+
+.results-count {
+  font-size: 14px;
+  color: #8e8e93;
+  font-weight: 500;
+}
+
+/* ===== Favorites page ===== */
+.fav-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 32px;
+  text-align: center;
+}
+
+.fav-empty-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.fav-empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1c1c1e;
+  margin-bottom: 6px;
+}
+
+.fav-empty-sub {
+  font-size: 15px;
+  color: #8e8e93;
+  line-height: 1.4;
+}
+
+.fav-card {
+  background: #fff;
+  border-radius: 14px;
+  margin: 0 16px 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fav-card-info {
+  flex: 1;
+}
+
+.fav-card-fruit {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1c1c1e;
+}
+
+.fav-card-countries {
+  font-size: 14px;
+  color: #8e8e93;
+  margin-top: 2px;
+}
+
+.fav-card-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.fav-card-actions ion-button {
+  --border-radius: 10px;
+  height: 36px;
+  font-size: 14px;
+}
+
+/* ===== Tab bar styling ===== */
+ion-tab-bar {
+  --background: #f8f8f8;
+  --border: 0.5px solid rgba(0,0,0,0.1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-tab-button {
+  --color: #8e8e93;
+  --color-selected: #007aff;
+  font-size: 10px;
+}
+
+/* ===== Info page ===== */
+.info-card {
+  background: #fff;
+  border-radius: 14px;
+  margin: 10px 16px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 1px rgba(0,0,0,0.04);
+}
+
+.info-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1c1c1e;
+  margin: 0 0 8px;
+}
+
+.info-card p {
+  font-size: 15px;
+  color: #3a3a3c;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.info-version {
+  text-align: center;
+  padding: 24px;
+  color: #8e8e93;
+  font-size: 13px;
+}
+
+/* ===== Offline banner ===== */
+.offline-banner {
+  background: #ff3b30;
+  color: #fff;
+  text-align: center;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ===== Save to favorites button ===== */
+.save-fav-btn {
+  --background: transparent;
+  --color: #007aff;
+  --border-radius: 10px;
+  font-size: 14px;
+  height: 36px;
+  margin: 0;
+}
+
+/* ===== Hero Card ===== */
+.hero-card {
+  margin: 12px 16px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #00a6b6 0%, #007a8a 100%);
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,102,115,0.25);
+  text-align: center;
+  color: #fff;
+}
+
+.hero-card .logo_img {
+  width: 130px;
+  margin: 0 auto 6px;
+}
+
+.hero-title {
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.hero-icons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.hero-icons img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.2);
+  padding: 4px;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.hero-buttons ion-button {
+  --background: rgba(255,255,255,0.2);
+  --color: #fff;
+  --border-radius: 10px;
+  --box-shadow: none;
+  font-size: 13px;
+  font-weight: 600;
+  height: 34px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ===== Fruit Chips ===== */
+.fruit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.fruit-chip {
+  flex: 1 1 calc(50% - 8px);
+  min-width: calc(50% - 8px);
+  background: #fff;
+  border: 2px solid #e5e5ea;
+  border-radius: 14px;
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1c1c1e;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.fruit-chip:active {
+  transform: scale(0.97);
+}
+
+.fruit-chip-selected {
+  background: #007aff;
+  border-color: #007aff;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,122,255,0.3);
+}
+
+/* ===== iOS Settings-style grouped sections ===== */
+.settings-section-header {
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.08px;
+  color: #6d6d72;
+  padding: 24px 36px 8px;
+}
+
+.settings-section-header:first-child {
+  padding-top: 12px;
+}
+
+.settings-group {
+  background: #fff;
+  border-radius: 12px;
+  margin: 0 16px;
+  overflow: hidden;
+  --ion-item-background: #fff;
+}
+
+.settings-group ion-item {
+  --background: #fff;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  --min-height: 44px;
+  font-size: 17px;
+}
+
+.settings-group ion-item:last-child {
+  --border-style: none;
+}
+
+.settings-icon {
+  color: #fff;
+  font-size: 17px;
+  border-radius: 7px;
+  padding: 5px;
+  margin-right: 12px;
+  margin-inline-end: 12px;
+  width: 29px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.settings-icon-blue { background: #007aff; }
+.settings-icon-green { background: #34c759; }
+.settings-icon-red { background: #ff3b30; }
+.settings-icon-orange { background: #ff9500; }
+.settings-icon-purple { background: #af52de; }
+.settings-icon-gray { background: #8e8e93; }
+.settings-icon-teal { background: #00a6b6; }
+
+/* ===== Country searchbar on Home ===== */
+.country-searchbar {
+  --border-radius: 10px;
+  --background: rgba(118, 118, 128, 0.12);
+  padding: 4px 16px !important;
+}
+
+/* ===== Selected countries chips ===== */
+.selected-countries-wrap {
+  padding: 8px 16px 0;
+}
+
+.selected-countries-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.selected-countries-chips ion-label,
+.selected-countries-chips ionlabel {
+  background: #007aff;
+  color: #fff;
+  border-radius: 16px;
+  padding: 5px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* ===== Home page note text ===== */
+.home-note {
+  padding: 8px 20px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #6d6d72;
+}
+
+/* ===== Settings page ===== */
+.settings-version {
+  text-align: center;
+  padding: 24px;
+  color: #8e8e93;
+  font-size: 13px;
+}
+
+.settings-group ion-item.destructive {
+  --color: #ff3b30;
+}
+
+.settings-group ion-note {
+  font-size: 15px;
+  color: #8e8e93;
 }

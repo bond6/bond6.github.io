@@ -28,38 +28,38 @@ const [showAlert6, setShowAlert6] = useState(false);
           </IonToolbar>
         </IonHeader>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/citricure.html",'_system', 'location=yes');/*FullScreenImage.showImageURL('https://bond6.github.io/assets/img/labels/CitruCure1.jpg');*/}}><IonLabel>CitriCure</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/citricure",'_system', 'location=yes');/*FullScreenImage.showImageURL('https://bond6.github.io/assets/img/labels/CitruCure1.jpg');*/}}><IonLabel>CitriCure</IonLabel></IonButton>
         </IonItem>
         <IonItem>
             <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={() => setShowAlert1(true)}><IonLabel>EcoTizer</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/evolve480SC.html",'_system', 'location=yes');}}><IonLabel>Evolve 480 SC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/evolve-480-sc",'_system', 'location=yes');}}><IonLabel>Evolve 480 SC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
             <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={() => setShowAlert2(true)}><IonLabel>HyperCide</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/icaProchloraz450EC.html",'_system', 'location=yes');}}><IonLabel>ICA Prochloraz 450 EC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/prochloraz-450-ec",'_system', 'location=yes');}}><IonLabel>ICA Prochloraz 450 EC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/icaThiabendazole500SC.html",'_system', 'location=yes');}}><IonLabel>ICA Thiabendazole 500 SC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/ica-thiabendazole-500-sc",'_system', 'location=yes');}}><IonLabel>ICA Thiabendazole 500 SC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products"  onClick={function() {window.open("https://www.icaonline.co.za/brandPages/imaculate300.html",'_system', 'location=yes');}}><IonLabel>ImaCulate 300 EC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products"  onClick={function() {window.open("https://icaonline.co.za/products/imaculate-300-ec",'_system', 'location=yes');}}><IonLabel>ImaCulate 300 EC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/imazacure500EC.html",'_system', 'location=yes');}}><IonLabel>ImazaCure 500 EC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/imazacure-500-ec",'_system', 'location=yes');}}><IonLabel>ImazaCure 500 EC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
             <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={() => setShowAlert3(true)}><IonLabel>ImazaCure 750 SG</IonLabel></IonButton>
         </IonItem>
 
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/propicure250EC.html",'_system', 'location=yes');}}><IonLabel>PropiCure 250 EC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/propicure-250-ec",'_system', 'location=yes');}}><IonLabel>PropiCure 250 EC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/propirly270EC.html",'_system', 'location=yes');}}><IonLabel>Propirly 270 EC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products",'_system', 'location=yes');}}><IonLabel>Propirly 270 EC</IonLabel></IonButton>
         </IonItem>
 
         <IonItem>
@@ -73,7 +73,7 @@ const [showAlert6, setShowAlert6] = useState(false);
 
 
         <IonItem>
-            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://www.icaonline.co.za/brandPages/strobicure250SC.html",'_system', 'location=yes');}}><IonLabel>StrobiCure 250 SC</IonLabel></IonButton>
+            <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={function() {window.open("https://icaonline.co.za/products/strobicure-250-sc",'_system', 'location=yes');}}><IonLabel>StrobiCure 250 SC</IonLabel></IonButton>
         </IonItem>
         <IonItem>
             <IonButton expand="full" fill="clear"  color="dark" className="products" onClick={() => setShowAlert6(true)}><IonLabel>Teacher 230 SC</IonLabel></IonButton>
@@ -88,7 +88,7 @@ const [showAlert6, setShowAlert6] = useState(false);
             {
               text: 'Label and MSDS',
               handler: () => {
-                window.open("https://www.icaonline.co.za/brandPages/ecotizer.html",'_system', 'location=yes');
+                window.open("https://icaonline.co.za/products/ecotizer",'_system', 'location=yes');
                 return false;
               },
 
@@ -118,7 +118,7 @@ const [showAlert6, setShowAlert6] = useState(false);
                     {
                       text: 'Label and MSDS',
                       handler: () => {
-                        window.open("https://www.icaonline.co.za/brandPages/HyperCide.html",'_system', 'location=yes');
+                        window.open("https://icaonline.co.za/products/hypercide-fungicide",'_system', 'location=yes');
                         return false;
                       },
 
@@ -148,7 +148,7 @@ const [showAlert6, setShowAlert6] = useState(false);
                     {
                       text: 'Label and MSDS',
                       handler: () => {
-                        window.open("https://www.icaonline.co.za/brandPages/imazacure750SG.html",'_system', 'location=yes');
+                        window.open("https://icaonline.co.za/products/imazacure-750-sg",'_system', 'location=yes');
                         return false;
                       },
 
@@ -178,7 +178,7 @@ const [showAlert6, setShowAlert6] = useState(false);
                         {
                           text: 'Label and MSDS',
                           handler: () => {
-                            window.open("https://www.icaonline.co.za/brandPages/protector400SC.html",'_system', 'location=yes');
+                            window.open("https://icaonline.co.za/products/protector-400-sc",'_system', 'location=yes');
                             return false;
                           },
 
@@ -207,7 +207,7 @@ const [showAlert6, setShowAlert6] = useState(false);
                         {
                           text: 'Label and MSDS',
                           handler: () => {
-                            window.open("https://www.icaonline.co.za/brandPages/sporekillAct36.html",'_system', 'location=yes');
+                            window.open("https://icaonline.co.za/products/sporekill-fungicide",'_system', 'location=yes');
                             return false;
                           },
 
@@ -236,7 +236,7 @@ const [showAlert6, setShowAlert6] = useState(false);
                         {
                           text: 'Label and MSDS',
                           handler: () => {
-                            window.open("https://www.icaonline.co.za/brandPages/teacher230SC.html",'_system', 'location=yes');
+                            window.open("https://icaonline.co.za/products/teacher-230-sc",'_system', 'location=yes');
                             return false;
                           },
 

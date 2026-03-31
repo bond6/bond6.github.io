@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { isPlatform, getPlatforms } from '@ionic/react';
 
-import { IonFooter,IonInput,IonListHeader, IonContent, IonHeader, IonPage, IonTitle, IonToolbar,IonRadio, IonCheckbox, IonList, IonItem, IonLabel,IonButton, IonRadioGroup, IonAlert  } from '@ionic/react';
+import { IonFooter, IonListHeader, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonRadio, IonCheckbox, IonList, IonItem, IonLabel, IonButton, IonRadioGroup, IonAlert, IonModal, IonSearchbar } from '@ionic/react';
 import * as serviceWorker from '../serviceWorker';
 import { Share } from '@capacitor/share';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Preferences } from '@capacitor/preferences';
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { RateApp } from 'capacitor-rate-app';
 
 import './Home.css';
 
@@ -134,6 +136,8 @@ function filterCountriesByFruit(fruitName: string) {
   var validCountries = fruit_country_map[fruitName];
   if (!validCountries) return;
   filterInProgress = true;
+  // Haptic on fruit selection
+  if (isNative) { try { Haptics.impact({style: ImpactStyle.Light}); } catch(e){} }
 
   // Build set of valid sub-country parents (e.g., "Codex A")
   var validSubs = new Set<string>();
@@ -201,33 +205,128 @@ function filterCountriesByFruit(fruitName: string) {
   filterInProgress = false;
 }
 
+// All country names available in the app for the first-time picker
+var allCountryNames = country_arr.map(function(c) { return c.country; }).filter(function(v, i, a) { return a.indexOf(v) === i; });
+
 const Home: React.FC = () => {
   const [showAlert0, setShowAlert0] = useState(false);
   const [showAlert1, setShowAlert1] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false);
   const [showAlert3, setShowAlert3] = useState(false);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [showReminderPicker, setShowReminderPicker] = useState(false);
+  const [countrySearch, setCountrySearch] = useState('');
+  const [suggestedCountry, setSuggestedCountry] = useState('');
 
-  // Restore last fruit/country selection on app launch
+  // First-time setup, restore selection, rating prompt
   useEffect(() => {
-    async function restoreSelection() {
+    async function initApp() {
       try {
+        // === First-time country detection/selection ===
+        var homeCountry = await Preferences.get({ key: 'homeCountry' });
+        if (!homeCountry.value) {
+          // Try auto-detect country via IP, fallback to RSA
+          var suggestion = 'RSA';
+          try {
+            var controller = new AbortController();
+            setTimeout(function() { controller.abort(); }, 3000);
+            var resp = await fetch('https://ipapi.co/country/', { signal: controller.signal });
+            var code = await resp.text();
+            var detected = isoToAppCountry[code.trim()];
+            if (detected) {
+              suggestion = detected;
+            }
+          } catch(e) {}
+          setSuggestedCountry(suggestion);
+          // Always show picker on first launch so user can confirm/change
+          setShowCountryPicker(true);
+        } else {
+          detectedCountry = homeCountry.value;
+        }
+
+        // === Track usage for rating prompt ===
+        var useCount = await Preferences.get({ key: 'useCount' });
+        var count = useCount.value ? parseInt(useCount.value) : 0;
+        count++;
+        await Preferences.set({ key: 'useCount', value: String(count) });
+
+        // Show rating prompt after 10 uses, then every 30 uses
+        var lastRated = await Preferences.get({ key: 'lastRatedAt' });
+        var lastRatedCount = lastRated.value ? parseInt(lastRated.value) : 0;
+        if (isNative && count >= 10 && (count - lastRatedCount) >= 20) {
+          setTimeout(async function() {
+            try {
+              await RateApp.requestReview();
+              await Preferences.set({ key: 'lastRatedAt', value: String(count) });
+            } catch(e) {}
+          }, 3000);
+        }
+
+        // === Request notification permission on first use ===
+        if (isNative && count === 1) {
+          try { await LocalNotifications.requestPermissions(); } catch(e) {}
+        }
+
+        // === Load favorite or restore last selection ===
+        var loadFav = await Preferences.get({ key: 'loadFavorite' });
+        if (loadFav.value) {
+          await Preferences.remove({ key: 'loadFavorite' });
+          var fav = JSON.parse(loadFav.value);
+
+          setTimeout(function() {
+            setSelected(fav.fruit);
+            filterCountriesByFruit(fav.fruit);
+
+            setTimeout(function() {
+              var countrySelElem = document.getElementsByClassName("country_sel")[0];
+              if (countrySelElem) { countrySelElem.innerHTML = ''; }
+              var allCheckboxes = document.querySelectorAll('.scroll ion-item');
+              allCheckboxes.forEach(function(item) {
+                var cb = item.querySelector('ion-checkbox') as any;
+                if (cb) { cb.checked = false; }
+              });
+
+              filterInProgress = true;
+              fav.countries.forEach(function(countryName: string) {
+                var items = document.querySelectorAll('.scroll ion-item');
+                items.forEach(function(item) {
+                  var el = item as HTMLElement;
+                  if (el.id === countryName) {
+                    var cb = el.querySelector('ion-checkbox') as any;
+                    if (cb) {
+                      cb.checked = true;
+                      if (countrySelElem) {
+                        var lbl = document.createElement("IonLabel");
+                        lbl.innerHTML = "<div>" + countryName + "</div>";
+                        lbl.id = countryName;
+                        countrySelElem.appendChild(lbl);
+                      }
+                    }
+                  }
+                });
+              });
+              filterInProgress = false;
+
+              setTimeout(function() {
+                var submitBtn = document.querySelector('ion-footer ion-button') as any;
+                if (submitBtn) { submitBtn.click(); }
+              }, 300);
+            }, 300);
+          }, 500);
+          return;
+        }
+
+        // Normal restore: just restore last fruit
         var savedFruit = await Preferences.get({ key: 'lastFruit' });
         if (savedFruit.value) {
-          // Wait for DOM to be ready
           setTimeout(function() {
-            // Select the saved fruit radio
-            var radios = document.getElementsByClassName("fruit");
-            for (var i = 0; i < radios.length; i++) {
-              if (radios[i].getAttribute("value") === savedFruit.value) {
-                (radios[i] as any).click();
-                break;
-              }
-            }
+            setSelected(savedFruit.value as string);
+            filterCountriesByFruit(savedFruit.value as string);
           }, 500);
         }
-      } catch(e) { /* ignore if Preferences not available */ }
+      } catch(e) {}
     }
-    restoreSelection();
+    initApp();
   }, []);
 
   const check_fun = async () => {
@@ -235,7 +334,6 @@ const Home: React.FC = () => {
      var country_s1:string[] = [];
      var final_result:any[] = [];
      var x = document.getElementsByClassName("country");
-      var y = document.getElementsByClassName("fruit");
      for (var i = 0; i < x.length; i++) {
         if (x[i].getAttribute("aria-checked") === "true") {
             var str_c:string = (x[i].getAttribute("value") || "");
@@ -243,12 +341,8 @@ const Home: React.FC = () => {
         }
      }
 
-     for (var i2 = 0; i2 < y.length; i2++) {
-        if (y[i2].getAttribute("aria-checked") === "true") {
-            var str_f:string = (y[i2].getAttribute("value") || "");
-            fruit_s = str_f;
-        }
-     }
+     // Get selected fruit from state (chips, not radio buttons)
+     fruit_s = selected;
      if (fruit_s !== "" && country_s1.length !== 0) {
 
     // Save last selection for next app launch
@@ -290,21 +384,30 @@ const Home: React.FC = () => {
 	}
     });
     //console.log(final_result);
-    var html_str:string = "<ion-grid> <ion-row class='row'><ion-col size='4' class='col'>Active </ion-col><ion-col size='4' class='col'>MRL</ion-col><ion-col class='col' size='4'>Product</ion-col></ion-row>";
+    var html_str:string = "<div class='mrl-cards'>";
     for (var i3 = 0; i3 < final_result.length; i3++) {
        if (final_result[i3].mrl !== "N") {
-            if (final_result[i3].mrl === "∞") {
-                html_str += "<ion-row class='row'> <ion-col size='4' class='col'> " + final_result[i3].active + " </ion-col> <ion-col size='4' class='col'> <p class='blue0'> " + final_result[i3].mrl + "</p> </ion-col> <ion-col size='4' class='col'> " + myFunction(final_result[i3].product) + " </ion-col> </ion-row>";
-            } else if (final_result[i3].mrl === "#") {
-              html_str += "<ion-row class='row'> <ion-col size='4' class='col'> " + final_result[i3].active + " </ion-col> <ion-col size='4' class='col'> <p class='blue'> " + final_result[i3].mrl + "</p> </ion-col> <ion-col size='4' class='col'> " + myFunction(final_result[i3].product) + " </ion-col> </ion-row>";
-            } else {
-              html_str += "<ion-row class='row'> <ion-col size='4' class='col'> " + final_result[i3].active + " </ion-col> <ion-col size='4' class='col'>  " + final_result[i3].mrl + " </ion-col> <ion-col size='4' class='col'> " + myFunction(final_result[i3].product) + " </ion-col> </ion-row>";
-            }
+            var mrlVal = final_result[i3].mrl;
+            var badgeClass = 'mrl-badge';
+            if (mrlVal === "∞") { badgeClass += ' mrl-badge-inf'; }
+            else if (mrlVal === "#") { badgeClass += ' mrl-badge-exempt'; }
+            else if (parseFloat(mrlVal) <= 2) { badgeClass += ' mrl-badge-low'; }
+            html_str += "<div class='mrl-card'>"
+              + "<div class='mrl-card-top'>"
+              + "<div class='mrl-card-name'>" + final_result[i3].active + "</div>"
+              + "<div class='" + badgeClass + "'>" + mrlVal + "</div>"
+              + "</div>"
+              + "<div class='mrl-card-products'>"
+              + "<span class='mrl-card-plabel'>Products</span>"
+              + "<span class='mrl-card-plist'>" + myFunction(final_result[i3].product) + "</span>"
+              + "</div>"
+              + "</div>";
        }
-
     }
-    html_str += "</ion-grid>";
+    html_str += "</div>";
     document.getElementsByClassName("demo")[0].innerHTML = html_str;
+    // Haptic feedback when results appear
+    if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
     //return final_result;
     fruit_country_s = true;
   } else {
@@ -362,22 +465,17 @@ document.getElementsByClassName("country_sel")[0].scrollIntoView();
             elem_show.appendChild(lbl);
         }
     }
-  const [selected] = useState<string>('biff');
+  const [selected, setSelected] = useState<string>('biff');
 
 
   return (
     <IonPage>
-      <IonHeader color="primary"  collapse="condense">
-        <IonToolbar color="primary">
-          <IonTitle>Citrus MRL V6.0</IonTitle>
-        </IonToolbar>
-      </IonHeader>
       <IonHeader>
         <IonToolbar color="primary">
           <IonTitle>Citrus MRL V6.0</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent fullscreen style={{"--background": "#f2f2f7"}}>
       <IonAlert
           isOpen={showAlert0}
           onDidDismiss={() => setShowAlert0(false)}
@@ -415,132 +513,294 @@ document.getElementsByClassName("country_sel")[0].scrollIntoView();
           buttons={['OK']}
         />
 
-        <IonItem>
-        <img className="logo_img" alt="ICA Logo" src="/assets/img/logo1.png" />
-        </IonItem>
-        <IonItem>
-        <div className="IonCenterAlign">
-
-
-                    <img className="mag_img" alt="Facebook" src="/assets/img/facebook.png"  onClick={function() {window.open("https://www.facebook.com/ICAInternationalChemicals/?rf=1585922241735402",'_system', 'location=yes');}}/>
-
-                    <img className="mag_img3" alt="Website" src="/assets/img/website_logo.png" onClick={function() {window.open("http://icaonline.co.za",'_system', 'location=yes');}}/>
-
-
-                    <img className="mag_img3" alt="Update" src="/assets/img/update_logo.png" onClick={function() {serviceWorker.unregister(); window.location.href = window.location.origin; window.location.reload();}} />
-
-        <img className="mag_img2" alt="Magazine" src="/assets/img/bros.png" onClick={function() {window.open("https://visualprojects.co.za/Info-Hub/ICA/",'_system', 'location=yes');}} />
-
-        <img className="mag_img1" alt="Magazine" src="/assets/img/bros1.png" onClick={function() {window.open("https://testicamobilemagazine.web.app/products_bros.html",'_system', 'location=yes');}} />
-        </div>
-        </IonItem>
-
-        <IonItem>
-              <div className="button_click1">
-                  <IonButton  href="#/dosage"><IonLabel>Dosages (RSA)</IonLabel></IonButton>
-                  <IonButton  href="#/label"><IonLabel>Products</IonLabel></IonButton>
-              </div>
-        </IonItem>
-        {isPlatform('ios') &&
-        <IonItem>
-        <div className="button_click1">
-        <IonButton onClick={() => setShowAlert0(true)}><IonLabel>How to Download iOS app</IonLabel></IonButton>
-        </div>
-        </IonItem>
-
-      }
-        <IonList>
-          <IonListHeader><IonLabel><h1>Fruit</h1></IonLabel></IonListHeader>
-<IonRadioGroup value={selected} onIonChange={(e: any) => { filterCountriesByFruit(e.detail.value); }}>
-
-           {fruit_arr.map(({ fruit, isCheck }, i) => (
-            <IonItem key={i}>
-              <IonLabel>{fruit}</IonLabel>
-              <IonRadio slot="end" class="fruit" value={fruit}/>
-            </IonItem>
-          ))}
-
-          </IonRadioGroup>
-
-        </IonList>
-
-          <IonListHeader><IonLabel><h1>Country</h1></IonLabel></IonListHeader>
-          <IonItem>
-          <IonInput placeholder="Enter Country Name"  id='input_country' onIonChange={e => handleInput(e)}></IonInput>
-          </IonItem>
-          <div className="scroll1" id="scrolling_div">
-              <IonList className="scroll">
-               {country_arr.map(({ country, sub, isCheck }, i) => (
-                <IonItem key={i} id={country} class={country}>
-                  {country}
-                  <IonCheckbox onIonChange={function (e) {event_handle(e);}} slot="end" class="country" id={country} value={sub} name={country} checked={isCheck} />
+        {/* First-time home country picker modal */}
+        <IonModal isOpen={showCountryPicker} backdropDismiss={false}>
+          <IonHeader>
+            <IonToolbar color="primary">
+              <IonTitle>Welcome!</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent style={{"--background": "#f2f2f7"}}>
+            <div style={{padding: '16px', textAlign: 'center'}}>
+              <p style={{fontSize: '15px', color: '#3a3a3c', margin: '0 0 4px'}}>Select your home country</p>
+              <p style={{fontSize: '13px', color: '#8e8e93', margin: 0}}>This auto-selects your import country when looking up MRL data.</p>
+            </div>
+            <IonSearchbar
+              placeholder="Search countries..."
+              value={countrySearch}
+              onIonChange={function(e: any) { setCountrySearch(e.detail.value || ''); }}
+              mode="ios"
+              style={{padding: '0 8px'}}
+            />
+            <IonList>
+              {/* Show detected country at top if found */}
+              {suggestedCountry && (countrySearch === '' || suggestedCountry.toLowerCase().indexOf(countrySearch.toLowerCase()) >= 0) && (
+                <IonItem
+                  key="suggested"
+                  button
+                  onClick={async function() {
+                    detectedCountry = suggestedCountry;
+                    await Preferences.set({ key: 'homeCountry', value: suggestedCountry });
+                    if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
+                    setShowCountryPicker(false);
+                    setCountrySearch('');
+                  }}
+                  lines="full"
+                  style={{"--background": "#e8f4fd"}}
+                >
+                  <IonLabel>
+                    <h2 style={{fontWeight: 700}}>{suggestedCountry}</h2>
+                    <p style={{color: '#007aff', fontSize: '12px'}}>Detected from your location</p>
+                  </IonLabel>
                 </IonItem>
-              ))}
-              </IonList>
-          </div>
+              )}
+              {/* Rest of countries, filtered by search */}
+              {allCountryNames
+                .filter(function(name) {
+                  if (name === suggestedCountry) return false; // already shown at top
+                  if (countrySearch === '') return true;
+                  return name.toLowerCase().indexOf(countrySearch.toLowerCase()) >= 0;
+                })
+                .map(function(name) {
+                  return (
+                    <IonItem
+                      key={name}
+                      button
+                      onClick={async function() {
+                        detectedCountry = name;
+                        await Preferences.set({ key: 'homeCountry', value: name });
+                        if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
+                        setShowCountryPicker(false);
+                        setCountrySearch('');
+                      }}
+                      lines="full"
+                    >
+                      <IonLabel>{name}</IonLabel>
+                    </IonItem>
+                  );
+                })
+              }
+            </IonList>
+          </IonContent>
+        </IonModal>
 
-
-          <IonListHeader><IonLabel><h1>Countries Selected</h1></IonLabel></IonListHeader>
-          <IonList class="country_sel"> <IonLabel id="RSA"> <div>RSA</div> </IonLabel> </IonList>
-          <div className="margin1"><IonLabel className="red"> Residues must comply to import as well as export countries (RSA) MRL's. </IonLabel></div>
-          <div className="margin1"><IonLabel className="blue"> ∞ No residue </IonLabel></div>
-          <div className="margin1"><IonLabel className="blue"> # Exempt from MRL - EU </IonLabel></div>
-          <div className="margin1"><IonLabel className="red"> No guarantees are given that the MRL data is correct at time of use. It is the user's responsibility to be familiar with the latest MRL requirements of their markets.  </IonLabel></div>
-          <IonListHeader><IonLabel><h1>MRL Table</h1></IonLabel></IonListHeader>
-          <IonItem class="demo">
-          </IonItem>
-      </IonContent>
-      <IonFooter color="primary">
-        <IonToolbar className="button_click1" color="primary">
-
-          <IonButton  color="light" className="button_click1 margin1" onClick={async function() {
-            if (isNative) { try { await Haptics.impact({style: ImpactStyle.Medium}); } catch(e){} }
-            check_fun(); go_bottom();
-          }}>
-            submit
-          </IonButton>
-
-          {isPlatform('ios') &&
-          <IonButton  color="light" className="button_click1 margin1" onClick={async function() {
-            var demoEl = document.getElementsByClassName("demo")[0];
-            if (!demoEl || !demoEl.textContent || demoEl.textContent.trim() === '') return;
-
-            // Get selected fruit
-            var fruitName = "";
-            var fruitRadios = document.getElementsByClassName("fruit");
-            for (var fi = 0; fi < fruitRadios.length; fi++) {
-              if (fruitRadios[fi].getAttribute("aria-checked") === "true") {
-                fruitName = fruitRadios[fi].getAttribute("value") || "";
+        {/* Reminder notification picker */}
+        <IonAlert
+          isOpen={showReminderPicker}
+          onDidDismiss={() => setShowReminderPicker(false)}
+          header={'Set MRL Reminder'}
+          message={'When should we remind you to check MRL requirements?'}
+          buttons={[
+            { text: 'Cancel', role: 'cancel' },
+            {
+              text: 'Tomorrow',
+              handler: async function() {
+                try {
+                  var fruitName = "";
+                  fruitName = selected || "citrus";
+                  await LocalNotifications.schedule({
+                    notifications: [{
+                      title: 'Citrus MRL Reminder',
+                      body: 'Check MRL requirements for ' + fruitName,
+                      id: Date.now(),
+                      schedule: { at: new Date(Date.now() + 24 * 60 * 60 * 1000) }
+                    }]
+                  });
+                  if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
+                } catch(e) {}
+              }
+            },
+            {
+              text: 'In 1 Week',
+              handler: async function() {
+                try {
+                  var fruitName = "";
+                  fruitName = selected || "citrus";
+                  await LocalNotifications.schedule({
+                    notifications: [{
+                      title: 'Citrus MRL Reminder',
+                      body: 'Check MRL requirements for ' + fruitName,
+                      id: Date.now(),
+                      schedule: { at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) }
+                    }]
+                  });
+                  if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
+                } catch(e) {}
+              }
+            },
+            {
+              text: 'In 30 Days',
+              handler: async function() {
+                try {
+                  var fruitName = "";
+                  fruitName = selected || "citrus";
+                  await LocalNotifications.schedule({
+                    notifications: [{
+                      title: 'Citrus MRL Reminder',
+                      body: 'Check MRL requirements for ' + fruitName,
+                      id: Date.now(),
+                      schedule: { at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) }
+                    }]
+                  });
+                  if (isNative) { try { Haptics.notification({type: 'SUCCESS' as any}); } catch(e){} }
+                } catch(e) {}
               }
             }
+          ]}
+        />
 
-            // Get selected countries
+        {/* ===== HERO CARD ===== */}
+        <div className="hero-card">
+          <img className="logo_img" alt="ICA Logo" src="/assets/img/logo1.png" />
+          <div className="hero-title">Citrus MRL V6.0</div>
+          <div className="hero-icons">
+            <img alt="Facebook" src="/assets/img/facebook.png" onClick={function() {window.open("https://www.facebook.com/ICAInternationalChemicals/?rf=1585922241735402",'_system', 'location=yes');}}/>
+            <img alt="Website" src="/assets/img/website_logo.png" onClick={function() {window.open("http://icaonline.co.za",'_system', 'location=yes');}}/>
+            <img alt="Magazine" src="/assets/img/bros.png" onClick={function() {window.open("https://visualprojects.co.za/Info-Hub/ICA/",'_system', 'location=yes');}} />
+            <img alt="Magazine" src="/assets/img/bros1.png" onClick={function() {window.open("https://testicamobilemagazine.web.app/products_bros.html",'_system', 'location=yes');}} />
+          </div>
+          <div className="hero-buttons">
+            <IonButton size="small" href="#/dosage"><IonLabel>Dosages (RSA)</IonLabel></IonButton>
+            <IonButton size="small" href="#/label"><IonLabel>Products</IonLabel></IonButton>
+          </div>
+        </div>
+
+        {/* ===== FRUIT CHIPS ===== */}
+        <div className="settings-section-header">SELECT FRUIT</div>
+        <div className="fruit-chips">
+          {fruit_arr.map(({ fruit }, i) => (
+            <div
+              key={i}
+              className={"fruit-chip fruit" + (selected === fruit ? " fruit-chip-selected" : "")}
+              data-value={fruit}
+              onClick={function() {
+                setSelected(fruit);
+                filterCountriesByFruit(fruit);
+                if (isNative) { try { Haptics.impact({style: ImpactStyle.Light}); } catch(e){} }
+              }}
+            >
+              {fruit}
+            </div>
+          ))}
+        </div>
+
+        {/* ===== COUNTRY SECTION ===== */}
+        <div className="settings-section-header">COUNTRY</div>
+        <IonSearchbar
+          placeholder="Search countries..."
+          mode="ios"
+          className="country-searchbar"
+          id='input_country'
+          onIonChange={e => handleInput(e)}
+        />
+        <div className="scroll1" id="scrolling_div" style={{margin: '0 16px', borderRadius: '12px', overflow: 'hidden'}}>
+          <IonList className="scroll" mode="ios" style={{background: '#fff'}}>
+            {country_arr.map(({ country, sub, isCheck }, i) => (
+              <IonItem key={i} id={country} class={country} lines="full">
+                <IonCheckbox onIonChange={function (e) {event_handle(e);}} slot="start" class="country" id={country} value={sub} name={country} checked={isCheck} mode="ios"/>
+                <IonLabel>{country}</IonLabel>
+              </IonItem>
+            ))}
+          </IonList>
+        </div>
+
+        {/* ===== SELECTED COUNTRIES ===== */}
+        <div className="settings-section-header">SELECTED COUNTRIES</div>
+        <div className="selected-countries-wrap">
+          <IonList class="country_sel" className="selected-countries-chips"> <IonLabel id="RSA"> <div>RSA</div> </IonLabel> </IonList>
+        </div>
+
+        {/* ===== LEGEND & RESULTS ===== */}
+        <div className="home-note">
+          <span style={{color: '#ff3b30'}}>Residues must comply with import as well as export country (RSA) MRLs.</span>
+          <br/>
+          <span style={{color: '#800080'}}>&#8734; No residue &nbsp;&nbsp; # Exempt from MRL (EU)</span>
+        </div>
+        <div className="results-heading">
+          <h1>Results</h1>
+          <span className="results-count" id="results-count"></span>
+        </div>
+        <div className="demo">
+        </div>
+      </IonContent>
+      <IonFooter>
+        <IonToolbar color="primary" style={{textAlign: 'center', padding: '4px 8px'}}>
+
+          <IonButton color="light" onClick={async function() {
+            if (isNative) { try { await Haptics.impact({style: ImpactStyle.Medium}); } catch(e){} }
+            check_fun(); go_bottom();
+            // Update results count
+            setTimeout(function() {
+              var cards = document.querySelectorAll('.mrl-card');
+              var countEl = document.getElementById('results-count');
+              if (countEl && cards.length > 0) { countEl.textContent = cards.length + ' results'; }
+            }, 100);
+          }}>
+            Submit
+          </IonButton>
+
+          <IonButton color="light" onClick={async function() {
+            if (isNative) { try { await Haptics.impact({style: ImpactStyle.Light}); } catch(e){} }
+            // Get current fruit and countries
+            var fruitName = "";
+            fruitName = selected;
             var countryNames: string[] = [];
             var selElem = document.getElementsByClassName("country_sel")[0];
             if (selElem) {
-              var children = Array.from(selElem.children);
-              children.forEach(function(child) { if (child.id) countryNames.push(child.id); });
+              Array.from(selElem.children).forEach(function(child) { if (child.id) countryNames.push(child.id); });
             }
+            if (!fruitName || countryNames.length === 0) return;
 
-            // Build share text with full context
+            // Load existing favorites, add new, save
+            var existing = await Preferences.get({ key: 'favorites' });
+            var favs: any[] = [];
+            if (existing.value) { try { favs = JSON.parse(existing.value); } catch(e){} }
+            // Check for duplicate
+            var isDup = favs.some(function(f: any) { return f.fruit === fruitName && JSON.stringify(f.countries) === JSON.stringify(countryNames); });
+            if (isDup) { alert('Already in favorites!'); return; }
+            favs.push({ fruit: fruitName, countries: countryNames, savedAt: new Date().toISOString() });
+            await Preferences.set({ key: 'favorites', value: JSON.stringify(favs) });
+            if (isNative) { try { await (Haptics as any).notification({type: 'SUCCESS'}); } catch(e){} }
+            alert('Saved to Favorites!');
+          }}>
+            &#9734; Save
+          </IonButton>
+
+          {isPlatform('ios') && isNative &&
+          <IonButton color="light" onClick={async function() {
+            var demoEl = document.getElementsByClassName("demo")[0];
+            if (!demoEl || !demoEl.textContent || demoEl.textContent.trim() === '') return;
+            var fruitName = "";
+            fruitName = selected;
+            var countryNames: string[] = [];
+            var selElem = document.getElementsByClassName("country_sel")[0];
+            if (selElem) {
+              Array.from(selElem.children).forEach(function(child) { if (child.id) countryNames.push(child.id); });
+            }
             var shareText = "Citrus MRL V6.0 Results\n";
             shareText += "Fruit: " + fruitName + "\n";
-            shareText += "Countries: " + countryNames.join(", ") + "\n";
-            shareText += "---\n";
-            var rows = demoEl.querySelectorAll("ion-row");
-            rows.forEach(function(row) {
-              var cols = row.querySelectorAll("ion-col");
-              var line = "";
-              cols.forEach(function(col) { line += (col.textContent || "").trim() + "  |  "; });
-              shareText += line.slice(0, -5) + "\n";
+            shareText += "Countries: " + countryNames.join(", ") + "\n---\n";
+            var cards = demoEl.querySelectorAll('.mrl-card');
+            cards.forEach(function(card) {
+              var name = card.querySelector('.mrl-card-name');
+              var mrl = card.querySelector('.mrl-badge');
+              var products = card.querySelector('.mrl-card-plist');
+              shareText += (name ? name.textContent : '') + " | MRL: " + (mrl ? mrl.textContent : '') + " | " + (products ? products.textContent : '') + "\n";
             });
             shareText += "---\nGenerated by Citrus MRL App";
-
             try {
               await Share.share({ title: 'Citrus MRL - ' + fruitName, text: shareText, dialogTitle: 'Share MRL Results' });
             } catch(e) {}
           }}>
-            share
+            Share
+          </IonButton>
+          }
+
+          {isNative &&
+          <IonButton color="light" onClick={function() {
+            setShowReminderPicker(true);
+          }}>
+            Remind
           </IonButton>
           }
 
