@@ -110,9 +110,17 @@ const [showAlert6, setShowAlert6] = useState(false);
                           buttons={[
 
                     {
-                      text: 'Label and MSDS',
+                      text: 'Fungicide Label',
                       handler: () => {
                         window.open("https://icaonline.co.za/products/hypercide-fungicide",'_blank');
+                        return false;
+                      },
+
+                    },
+                    {
+                      text: 'Disinfectant Label',
+                      handler: () => {
+                        window.open("https://icaonline.co.za/products/hypercide-sanitation",'_blank');
                         return false;
                       },
 
