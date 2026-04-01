@@ -450,16 +450,34 @@ ion-tab-button {
 .hero-icons {
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   gap: 10px;
   margin-bottom: 12px;
 }
 
-.hero-icons img {
-  width: 32px;
-  height: 32px;
+.hero-icon-sm {
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 8px;
   background: rgba(255,255,255,0.2);
   padding: 4px;
+}
+
+.hero-icon-web {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.2);
+  padding: 4px;
+}
+
+.hero-icon-mag {
+  width: 65px !important;
+  height: auto !important;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  padding: 0 !important;
+  background: none !important;
 }
 
 .hero-buttons {

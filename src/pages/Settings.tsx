@@ -77,15 +77,15 @@ const Settings: React.FC = () => {
         {/* QUICK LINKS */}
         <div className="settings-section-header">QUICK LINKS</div>
         <IonList className="settings-group" lines="full" mode="ios">
-          <IonItem button detail onClick={function() { window.open("http://icaonline.co.za",'_system', 'location=yes'); }}>
+          <IonItem button detail onClick={function() { window.open("http://icaonline.co.za",'_blank'); }}>
             <div className="settings-icon settings-icon-teal" slot="start"><IonIcon icon={linkOutline} /></div>
             <IonLabel>ICA Website</IonLabel>
           </IonItem>
-          <IonItem button detail onClick={function() { window.open("https://www.facebook.com/ICAInternationalChemicals/?rf=1585922241735402",'_system', 'location=yes'); }}>
+          <IonItem button detail onClick={function() { window.open("https://www.facebook.com/ICAInternationalChemicals/?rf=1585922241735402",'_blank'); }}>
             <div className="settings-icon settings-icon-blue" slot="start"><IonIcon icon={logoFacebook} /></div>
             <IonLabel>Facebook</IonLabel>
           </IonItem>
-          <IonItem button detail onClick={function() { window.open("https://visualprojects.co.za/Info-Hub/ICA/",'_system', 'location=yes'); }}>
+          <IonItem button detail onClick={function() { window.open("https://visualprojects.co.za/Info-Hub/ICA/",'_blank'); }}>
             <div className="settings-icon settings-icon-orange" slot="start"><IonIcon icon={newspaperOutline} /></div>
             <IonLabel>ICA Magazine</IonLabel>
           </IonItem>
